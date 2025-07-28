@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+
+	"github.com/nickolss/financial_api/schemas"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,5 +19,10 @@ func InitDatabase() error {
 	}
 
 	DB = db
+	RealizeMigrations()
 	return nil
+}
+
+func RealizeMigrations() {
+	DB.AutoMigrate(&schemas.Category{}, &schemas.Client{}, &schemas.FinancialEvent{})
 }
