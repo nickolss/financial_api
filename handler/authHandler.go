@@ -8,14 +8,7 @@ import (
 	"github.com/nickolss/financial_api/schemas"
 )
 
-// @Summary Register a new user
-// @Description API to create a new user
-// @Tags auth
-// @Accept json
-// @Produce json
-// @Param request body schemas.Client true "Request Body"
-// @Router /register [post]
-func RegisterUser(ctx *gin.Context) {
+func RegisterClient(ctx *gin.Context) {
 	var client schemas.Client
 
 	if err := ctx.ShouldBindJSON(&client); err != nil {
@@ -68,7 +61,7 @@ func Login(ctx *gin.Context) {
 	})
 }
 
-func GetUser(ctx *gin.Context) {
+func GetClient(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{
 		"message": "get user is working",
 	})
