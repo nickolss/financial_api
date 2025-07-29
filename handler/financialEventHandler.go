@@ -28,6 +28,15 @@ func CreateFinancialEvent(ctx *gin.Context) {
 		return
 	}
 
+	client.Balance -= request.Amount
+	if err := config.DB.Save(&client).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "error to update user balance",
+			"error":   err.Error(),
+		})
+		return
+	}
+
 	event := schemas.FinancialEvent{
 		FinancialName: request.FinancialName,
 		Amount:        request.Amount,
@@ -110,7 +119,6 @@ func UpdateFinancialEvent(ctx *gin.Context) {
 	}
 
 	var event schemas.FinancialEvent
-
 	result := config.DB.Find(&event, id)
 
 	if result.Error != nil {
@@ -155,6 +163,9 @@ func UpdateFinancialEvent(ctx *gin.Context) {
 }
 
 func DeleteEventById(ctx *gin.Context) {
+	var event schemas.FinancialEvent
+	var client schemas.Client
+
 	id := ctx.Param("id")
 	if id == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -164,13 +175,31 @@ func DeleteEventById(ctx *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Delete(&schemas.FinancialEvent{}, id).Error; err != nil {
+	if err := config.DB.Find(&event, id).Error; err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "event not found",
+			"error":   err.Error(),
+		})
+	}
+
+	if err := config.DB.Find(&client, event.ClientId); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "user not found",
+			"error":   err.Error,
+		})
+		return
+	}
+
+	if err := config.DB.Delete(&event, id).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "internal server error",
 			"error":   err.Error(),
 		})
 		return
 	}
+
+	client.Balance -= event.Amount
+	config.DB.Save(&client)
 
 	ctx.JSON(200, gin.H{
 		"message": "event deleted",
