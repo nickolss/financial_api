@@ -8,9 +8,12 @@ import (
 func InitRouter() {
 	router := gin.Default()
 	// Auth routes
-	router.POST("/register", handler.RegisterUser)
+	router.POST("/register", handler.RegisterClient)
 	router.POST("/login", handler.Login)
-	router.GET("/getUser", handler.GetUser)
+	router.GET("/getUser", handler.GetClient)
+
+	// Client routes
+	router.GET("/client/:id", handler.FindClientById)
 
 	// Operation routes
 	router.POST("/financialEvent", handler.CreateFinancialEvent)
