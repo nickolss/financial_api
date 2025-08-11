@@ -19,16 +19,19 @@ func InitEnv() error {
 		fmt.Println("Warning: .env file not found, continuing with environment variables")
 	}
 
-	Env = Environment{
-		Port:         os.Getenv("PORT"),
-		Database_url: os.Getenv("PSQL_URL"),
-	}
+	rawPort := os.Getenv("PORT")
+	dbURL := os.Getenv("PSQL_URL")
 
-	if Env.Port == "" {
+	if rawPort == "" {
 		return fmt.Errorf("missing required environment variable: PORT")
 	}
-	if Env.Database_url == "" {
+	if dbURL == "" {
 		return fmt.Errorf("missing required environment variable: PSQL_URL")
+	}
+
+	Env = Environment{
+		Port:         fmt.Sprintf(":%s", rawPort),
+		Database_url: dbURL,
 	}
 
 	return nil
