@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nickolss/financial_api/config"
 	"github.com/nickolss/financial_api/handler"
 )
 
@@ -27,5 +28,5 @@ func InitRouter() {
 	router.POST("/category", handler.AddCategory)
 	router.DELETE("/category/:id", handler.DeleteCategoryById)
 
-	router.Run(":9999")
+	router.Run(config.Env.Port)
 }

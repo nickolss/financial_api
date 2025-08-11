@@ -9,9 +9,9 @@ import (
 
 func main() {
 	// Initialize Configs
-	err := config.InitDatabase()
+	err := config.InitConfig()
 	if err != nil {
-		fmt.Println("Database initialization error:", err)
+		fmt.Println("Config initialization error:", err)
 		return
 	}
 

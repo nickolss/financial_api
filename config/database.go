@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func InitDatabase() error {
-	dbURL := "postgres://user:pass@localhost:5432/database"
+	dbURL := Env.Database_url
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
